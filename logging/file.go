@@ -13,13 +13,7 @@ const (
 	__logfile_ext = "log"
 )
 
-type LogConfig struct {
-	RunMode			foundation.RUN_MODE
-	RuntimeRootPath string
-	LogSavePath 	string
-	LogPrefix		string
-}
-var _config LogConfig
+
 
 
 func getLogFilePath() string {

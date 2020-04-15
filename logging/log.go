@@ -2,14 +2,32 @@ package logging
 
 import (
 	"fmt"
-	"github.com/sean-tech/gokit/foundation"
 	"io"
 	"log"
 	"path/filepath"
 	"runtime"
 	"sync"
+	"github.com/sean-tech/gokit/foundation"
 	"github.com/robfig/cron"
 )
+
+type LogConfig struct {
+	RunMode			foundation.RUN_MODE
+	RuntimeRootPath string
+	LogSavePath 	string
+	LogPrefix		string
+}
+var _config LogConfig
+
+/**
+ * setup
+ */
+func Setup(config LogConfig) {
+	_config = config
+	initLogger()
+	logFileSliceTiming()
+}
+
 
 type Level int
 const (
@@ -25,18 +43,16 @@ const (
 	__defaultCallerDepth = 2
 )
 
+type WriterCallback func(writer io.Writer)
 var (
 	_levelFlags = []string{"DEBUG", "INFO", "WARN", "ERROR", "FATAL"}
 	_lock       sync.Mutex
 	_logger     *log.Logger
 	//_ginWriter  io.Writer
+	_writerCallback WriterCallback = nil
 )
 
-func Setup(config LogConfig) {
-	_config = config
-	initLogger()
-	logFileSliceTiming()
-}
+
 
 func initLogger() {
 	var err error
@@ -94,8 +110,8 @@ func logFileSliceTiming()  {
 	err := c.AddFunc(spec, func() {
 		if fileTimePassDaySlice() {
 			initLogger()
-			if ginWriterCallback != nil {
-				GinWriterGet(ginWriterCallback)
+			if _writerCallback != nil {
+				WriterGet(_writerCallback)
 			}
 		}
 
@@ -107,17 +123,16 @@ func logFileSliceTiming()  {
 }
 
 
-type GinWriterCallback func(writer io.Writer)
-var ginWriterCallback GinWriterCallback = nil
+
 /**
- * 提供gin日志文件writer回调
+ * 提供日志文件writer回调
  */
-func GinWriterGet(callback GinWriterCallback)  {
+func WriterGet(callback WriterCallback)  {
 	if callback == nil {
 		return
 	}
-	if &ginWriterCallback != &callback {
-		ginWriterCallback = callback
+	if &_writerCallback != &callback {
+		_writerCallback = callback
 	}
 
 	//var err error
@@ -125,5 +140,5 @@ func GinWriterGet(callback GinWriterCallback)  {
 	//if err != nil {
 	//	log.Fatalln(err)
 	//}
-	ginWriterCallback(_logger.Writer())
+	_writerCallback(_logger.Writer())
 }
