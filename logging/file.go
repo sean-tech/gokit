@@ -2,10 +2,10 @@ package logging
 
 import (
 	"fmt"
-	"github.com/sean-tech/gokit/foundation"
 	"os"
 	"time"
 	"github.com/sean-tech/gokit/fileutils"
+	"github.com/sean-tech/gokit/foundation"
 )
 
 const (
