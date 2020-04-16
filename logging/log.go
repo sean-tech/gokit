@@ -4,11 +4,12 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"os"
 	"path/filepath"
 	"runtime"
 	"sync"
-	"github.com/sean-tech/gokit/foundation"
 	"github.com/robfig/cron"
+	"github.com/sean-tech/gokit/foundation"
 )
 
 type LogConfig struct {
@@ -24,121 +25,96 @@ var _config LogConfig
  */
 func Setup(config LogConfig) {
 	_config = config
-	initLogger()
-	logFileSliceTiming()
-}
 
-
-type Level int
-const (
-	level_debug Level = iota
-	level_info
-	level_warning
-	level_error
-	level_fatal
-)
-
-const (
-	__defaultPrefix      = ""
-	__defaultCallerDepth = 2
-)
-
-type WriterCallback func(writer io.Writer)
-var (
-	_levelFlags = []string{"DEBUG", "INFO", "WARN", "ERROR", "FATAL"}
-	_lock       sync.Mutex
-	_logger     *log.Logger
-	//_ginWriter  io.Writer
-	_writerCallback WriterCallback = nil
-)
-
-
-
-func initLogger() {
 	var err error
-	file, err := openLogFile(getLogFileName(), getLogFilePath())
+	filePath := getLogFilePath()
+	fileName := getLogFileName()
+	_file, err = openLogFile(fileName, filePath)
 	if err != nil {
 		log.Fatalln(err)
 	}
-	_lock.Lock()
-	defer _lock.Unlock()
-	_logger = log.New(file, __defaultPrefix, log.LstdFlags)
+	_logger = log.New(_file, _defaultPrefix, log.LstdFlags)
+
+	rotateTimingStart()
 }
 
+func Writer() io.Writer {
+	return _logger.Writer()
+}
+
+var (
+	_defaultPrefix      = ""
+	_defaultCallerDepth = 2
+	_levelFlags = []string{"DEBUG", "INFO", "WARN", "ERROR", "FATAL"}
+	_logPrefix  = ""
+
+	_file *os.File
+	_logger     *log.Logger
+	_lock       sync.RWMutex
+	_rotating sync.WaitGroup
+)
+
+type Level int
+const (
+	LEVEL_DEBUG Level = iota
+	LEVEL_INFO
+	LEVEL_WARNING
+	LEVEL_ERROR
+	LEVEL_FATAL
+)
+
 func Debug(v ...interface{})  {
-	if _config.RunMode == foundation.RUN_MODE_DEBUG {
-		fmt.Println(v)
-		setPrefix(level_debug)
-		_logger.Print(v)
-	}
+	setPrefix(LEVEL_DEBUG)
+	_rotating.Wait()
+	_logger.Print(v)
 }
 
 func Info(v ...interface{})  {
-	setPrefix(level_info)
+	setPrefix(LEVEL_INFO)
+	_rotating.Wait()
 	_logger.Print(v)
 }
 
 func Warning(v ...interface{})  {
-	setPrefix(level_warning)
+	setPrefix(LEVEL_WARNING)
+	_rotating.Wait()
 	_logger.Print(v)
 }
 
 func Error(v ...interface{})  {
-	setPrefix(level_error)
+	setPrefix(LEVEL_ERROR)
+	_rotating.Wait()
 	_logger.Print(v)
 }
 
 func Fatal(v ...interface{})  {
-	setPrefix(level_fatal)
+	setPrefix(LEVEL_FATAL)
+	_rotating.Wait()
 	_logger.Print(v)
 }
 
-func setPrefix(level Level) {
-	_, file, line, ok := runtime.Caller(__defaultCallerDepth)
-	var logPrefix string = ""
+func setPrefix(level Level)  {
+	_, file, line, ok := runtime.Caller(_defaultCallerDepth)
 	if ok {
-		logPrefix = fmt.Sprintf("[%s]:[%s:%d]", _levelFlags[level], filepath.Base(file), line)
+		_logPrefix = fmt.Sprintf("[%s]:[%s:%d]", _levelFlags[level], filepath.Base(file), line)
 	} else {
-		logPrefix = fmt.Sprintf("[%s]", _levelFlags[level])
+		_logPrefix = fmt.Sprintf("[%s]", _levelFlags[level])
 	}
-	_logger.SetPrefix(logPrefix)
+	_logger.SetPrefix(_logPrefix)
 }
 
-func logFileSliceTiming()  {
+func rotateTimingStart() {
 	c := cron.New()
 	spec := "0 0 0 * * *"
-	err := c.AddFunc(spec, func() {
-		if fileTimePassDaySlice() {
-			initLogger()
-			if _writerCallback != nil {
-				WriterGet(_writerCallback)
-			}
+	if err := c.AddFunc(spec, func() {
+		if logFileShouldRotate() == true {
+			_rotating.Add(1)
+			logFileRotate()
+			_rotating.Done()
 		}
 
-	})
-	if err != nil {
+	}); err != nil {
 		log.Fatal(err)
 	}
 	c.Start()
-}
-
-
-
-/**
- * 提供日志文件writer回调
- */
-func WriterGet(callback WriterCallback)  {
-	if callback == nil {
-		return
-	}
-	if &_writerCallback != &callback {
-		_writerCallback = callback
-	}
-
-	//var err error
-	//_ginWriter, err = openLogFile(getLogFileName(_levelFlags[level_gin]), getLogFilePath())
-	//if err != nil {
-	//	log.Fatalln(err)
-	//}
-	_writerCallback(_logger.Writer())
 }

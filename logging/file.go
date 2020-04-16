@@ -2,18 +2,15 @@ package logging
 
 import (
 	"fmt"
+	"github.com/sean-tech/gokit/fileutils"
 	"os"
 	"time"
-	"github.com/sean-tech/gokit/fileutils"
-	"github.com/sean-tech/gokit/foundation"
 )
 
 const (
 	__time_format = "20060101"
 	__logfile_ext = "log"
 )
-
-
 
 
 func getLogFilePath() string {
@@ -57,6 +54,38 @@ func openLogFile(fileName, filePath string) (*os.File, error) {
 	return f, nil
 }
 
+/**
+ * return result of log file should rotate, if should, return true
+ */
+func logFileShouldRotate() bool {
+	// 默认日志文件不存在，无初始化文件，不继续处理
+	currentLogFileExist := fileutils.CheckExist(getLogFilePath() + getLogFileName())
+	if !currentLogFileExist {
+		return false
+	}
+	// 昨日日志文件存在，说明已处理，不继续处理
+	lastDayLogFileExist := fileutils.CheckExist(getLogFilePath() + getLastDayLogFileName())
+	if lastDayLogFileExist {
+		return false
+	}
+	return true
+}
+
+/**
+ * log file rotate
+ */
+func logFileRotate() error {
+	src := getLogFilePath() + getLogFileName()
+	dst := getLogFilePath() + getLastDayLogFileName()
+	if _, err := fileutils.CopyFile(dst, src); err != nil {
+		return err
+	}
+	return fileutils.ClearFile(src)
+}
+
+/**
+ * unused
+ */
 func fileTimePassDaySlice() bool {
 	// 默认日志文件不存在，无初始化文件，不继续处理
 	currentLogFileExist := fileutils.CheckExist(getLogFilePath() + getLogFileName())
