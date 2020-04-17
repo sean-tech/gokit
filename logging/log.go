@@ -2,21 +2,21 @@ package logging
 
 import (
 	"fmt"
+	"github.com/robfig/cron"
+	"github.com/sean-tech/gokit/validate"
 	"io"
 	"log"
 	"os"
 	"path/filepath"
 	"runtime"
 	"sync"
-	"github.com/robfig/cron"
-	"github.com/sean-tech/gokit/foundation"
 )
 
 type LogConfig struct {
-	RunMode			foundation.RUN_MODE
-	RuntimeRootPath string
-	LogSavePath 	string
-	LogPrefix		string
+	RunMode			string	`validate:"required,oneof=debug release"`
+	RuntimeRootPath string	`validate:"required,gt=1"`
+	LogSavePath 	string	`validate:"required,gt=1"`
+	LogPrefix		string	`validate:"required,gt=1"`
 }
 var _config LogConfig
 
@@ -24,6 +24,9 @@ var _config LogConfig
  * setup
  */
 func Setup(config LogConfig) {
+	if err := validate.ValidateParameter(config); err != nil {
+		log.Fatal(err)
+	}
 	_config = config
 
 	var err error
