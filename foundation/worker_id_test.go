@@ -19,12 +19,13 @@ func TestGenerateId(t *testing.T) {
 		{3},
 		{4},
 	}
+
 	for _, data := range testData {
-		id, err := GenerateId(data.workerId)
+		worker, err := NewWorker(data.workerId)
 		if err != nil {
 			t.Errorf(err.Error())
 		}
-		fmt.Println(id)
+		fmt.Println(worker.GetId())
 	}
 }
 
@@ -32,17 +33,19 @@ func TestGenerateId2(t *testing.T) {
 	var ids []int64 = []int64{}
 	var lock sync.Mutex
 	wg := sync.WaitGroup{}
+
+	// 注意，worker全局应只有一个实例，不要生成id时临时创建，并发会冲突
+	worker, err := NewWorker(1)
+	if err != nil {
+		t.Error(err)
+	}
 	for i := 0; i < 100; i++ {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
-			id, err := GenerateId(1)
-			if err != nil {
-				t.Error(err)
-			}
 			lock.Lock()
 			defer lock.Unlock()
-			ids = append(ids, id)
+			ids = append(ids, worker.GetId())
 		}()
 	}
 	wg.Wait()

@@ -3,11 +3,11 @@ package validate
 import (
 	"errors"
 	"fmt"
+	"gopkg.in/go-playground/validator.v9"
 	"log"
 	"reflect"
 	"regexp"
 	"sync"
-	"gopkg.in/go-playground/validator.v9"
 )
 
 type Tag string

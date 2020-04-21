@@ -120,6 +120,6 @@ func TestValdateParameter2(t *testing.T) {
 	if err != nil {
 		t.Errorf("parameter validate failed: %v\n", err)
 	} else  {
-		t.Errorf("parameter validate success\n")
+		fmt.Print("parameter validate success\n")
 	}
 }

@@ -2,8 +2,6 @@ package foundation
 
 import (
 	"errors"
-	"fmt"
-	"log"
 	"sync"
 	"time"
 )
@@ -24,6 +22,11 @@ const (
 	epoch int64 = 1565420047000 // 这个是我在写epoch这个常量时的时间戳(毫秒)
 )
 
+type SnowId interface {
+	GetId() int64
+	GetProjTimeStamp() int64
+}
+
 // 定义一个woker工作节点所需要的基本参数
 type Worker struct {
 	mu sync.Mutex // 添加互斥锁 确保并发安全
@@ -32,8 +35,11 @@ type Worker struct {
 	number int64 // 当前毫秒已经生成的id序列号(从0开始累加) 1毫秒内最多生成4096个ID
 }
 
-// 实例化一个工作节点
-// workerId 为当前节点的id
+/**
+ * 实例化一个工作节点
+ * workerId 为当前节点的id
+ * 注意，worker全局应只有一个实例，不要生成id时临时创建，并发会冲突
+ */
 func NewWorker(workerId int64) (*Worker, error) {
 	// 要先检测workerId是否在上面定义的范围内
 	if workerId < 0 || workerId > workerMax {
@@ -76,29 +82,6 @@ func (w *Worker) GetId() int64 {
 	return ID
 }
 
-var (
-	workerOnce sync.Once
-	workerInstance *Worker
-)
-
-func GenerateId(workerId int64) (int64, error) {
-
-	var err error
-	workerOnce.Do(func() {
-		// 生成节点实例
-		workerInstance, err = NewWorker(workerId)
-		if err != nil {
-			log.Panic(err)
-		}
-	})
-	if err != nil {
-		fmt.Println(err)
-		return 0, fmt.Errorf("generate id worker created failed")
-	}
-	id := workerInstance.GetId()
-	return id, nil
-}
-
-func ProjTimeStamp() int64 {
+func (w *Worker) GetProjTimeStamp() int64 {
 	return time.Now().UnixNano() - epoch
 }

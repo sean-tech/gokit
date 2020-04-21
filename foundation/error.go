@@ -1,17 +1,25 @@
 package foundation
 
 type Error struct {
-	Code int
-	Msg string
+	code int
+	msg  string
 }
 
 func (this *Error) Error() string {
-	return this.Msg
+	return this.msg
+}
+
+func (this *Error) Code() int {
+	return this.code
+}
+
+func (this *Error) Msg() string {
+	return this.msg
 }
 
 func NewError(code int, msg string) *Error {
 	return &Error{
-		Code: code,
-		Msg:  msg,
+		code: code,
+		msg:  msg,
 	}
 }
