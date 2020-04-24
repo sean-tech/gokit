@@ -12,6 +12,19 @@ import (
 	"sync"
 )
 
+var (
+	_defaultPrefix      = ""
+	_defaultCallerDepth = 2
+	_levelFlags = []string{"DEBUG", "INFO", "WARN", "ERROR", "FATAL"}
+	_logPrefix  = ""
+
+	_file *os.File
+	_logger     *log.Logger
+	_lock       sync.RWMutex
+	_rotating sync.WaitGroup
+)
+
+
 type LogConfig struct {
 	RunMode			string	`validate:"required,oneof=debug release"`
 	RuntimeRootPath string	`validate:"required,gt=1"`
@@ -45,17 +58,11 @@ func Writer() io.Writer {
 	return _logger.Writer()
 }
 
-var (
-	_defaultPrefix      = ""
-	_defaultCallerDepth = 2
-	_levelFlags = []string{"DEBUG", "INFO", "WARN", "ERROR", "FATAL"}
-	_logPrefix  = ""
+func Logger() *log.Logger {
+	return _logger
+}
 
-	_file *os.File
-	_logger     *log.Logger
-	_lock       sync.RWMutex
-	_rotating sync.WaitGroup
-)
+
 
 type Level int
 const (
@@ -78,7 +85,7 @@ func Info(v ...interface{})  {
 	_logger.Print(v)
 }
 
-func Warning(v ...interface{})  {
+func Warn(v ...interface{})  {
 	setPrefix(LEVEL_WARNING)
 	_rotating.Wait()
 	_logger.Print(v)
@@ -121,3 +128,64 @@ func rotateTimingStart() {
 	}
 	c.Start()
 }
+
+
+
+type FmtLogger struct {
+}
+var _formatlogger = &FmtLogger{}
+
+func FormatLogger() *FmtLogger {
+	return _formatlogger
+}
+
+func (this *FmtLogger) Debug(v ...interface{}) {
+	Debug(v)
+}
+
+func (this *FmtLogger) Debugf(format string, v ...interface{}) {
+	Debug(fmt.Sprintf(format, v))
+}
+
+func (this *FmtLogger) Info(v ...interface{}) {
+	Info(v)
+}
+
+func (this *FmtLogger) Infof(format string, v ...interface{}) {
+	Info(fmt.Sprintf(format, v))
+}
+
+func (this *FmtLogger) Warn(v ...interface{}) {
+	Warn(v)
+}
+
+func (this *FmtLogger) Warnf(format string, v ...interface{}) {
+	Warn(fmt.Sprintf(format, v))
+}
+
+func (this *FmtLogger) Error(v ...interface{}) {
+	Error(v)
+}
+
+func (this *FmtLogger) Errorf(format string, v ...interface{}) {
+	Error(fmt.Sprintf(format, v))
+}
+
+func (this *FmtLogger) Fatal(v ...interface{}) {
+	Fatal(v)
+}
+
+func (this *FmtLogger) Fatalf(format string, v ...interface{}) {
+	Fatal(fmt.Sprintf(format, v))
+}
+
+func (this *FmtLogger) Panic(v ...interface{}) {
+	Fatal(v)
+}
+
+func (this *FmtLogger) Panicf(format string, v ...interface{}) {
+	Fatal(fmt.Sprintf(format, v))
+}
+
+
+
