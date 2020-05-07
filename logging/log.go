@@ -12,22 +12,42 @@ import (
 	"sync"
 )
 
-var (
+type ILogger interface {
+	Writer() io.Writer
+
+	Debug(v ...interface{})
+	Debugf(format string, v ...interface{})
+
+	Info(v ...interface{})
+	Infof(format string, v ...interface{})
+
+	Warn(v ...interface{})
+	Warnf(format string, v ...interface{})
+
+	Error(v ...interface{})
+	Errorf(format string, v ...interface{})
+
+	Fatal(v ...interface{})
+	Fatalf(format string, v ...interface{})
+
+	Panic(v ...interface{})
+	Panicf(format string, v ...interface{})
+}
+
+const (
 	_defaultPrefix      = ""
 	_defaultCallerDepth = 2
-	_levelFlags = []string{"DEBUG", "INFO", "WARN", "ERROR", "FATAL"}
-	_logPrefix  = ""
 
-	_file *os.File
+)
+var (
+	_levelFlags = []string{"DEBUG", "INFO", "WARN", "ERROR", "FATAL"}
+	_file 		*os.File
 	_logger     *log.Logger
 	_lock       sync.RWMutex
-	_rotating sync.WaitGroup
+	_rotating 	sync.WaitGroup
 )
 
-
 type LogConfig struct {
-	RunMode			string	`validate:"required,oneof=debug release"`
-	RuntimeRootPath string	`validate:"required,gt=1"`
 	LogSavePath 	string	`validate:"required,gt=1"`
 	LogPrefix		string	`validate:"required,gt=1"`
 }
@@ -53,16 +73,6 @@ func Setup(config LogConfig) {
 
 	rotateTimingStart()
 }
-
-func Writer() io.Writer {
-	return _logger.Writer()
-}
-
-func Logger() *log.Logger {
-	return _logger
-}
-
-
 
 type Level int
 const (
@@ -105,12 +115,13 @@ func Fatal(v ...interface{})  {
 
 func setPrefix(level Level)  {
 	_, file, line, ok := runtime.Caller(_defaultCallerDepth)
+	var logPrefix string
 	if ok {
-		_logPrefix = fmt.Sprintf("[%s]:[%s:%d]", _levelFlags[level], filepath.Base(file), line)
+		logPrefix = fmt.Sprintf("[%s]:[%s:%d]", _levelFlags[level], filepath.Base(file), line)
 	} else {
-		_logPrefix = fmt.Sprintf("[%s]", _levelFlags[level])
+		logPrefix = fmt.Sprintf("[%s]", _levelFlags[level])
 	}
-	_logger.SetPrefix(_logPrefix)
+	_logger.SetPrefix(logPrefix)
 }
 
 func rotateTimingStart() {
@@ -131,59 +142,62 @@ func rotateTimingStart() {
 
 
 
-type FmtLogger struct {
-}
-var _formatlogger = &FmtLogger{}
+type loggerImpl struct {}
+var _formatlogger = &loggerImpl{}
 
-func FormatLogger() *FmtLogger {
+func Logger() ILogger {
 	return _formatlogger
 }
 
-func (this *FmtLogger) Debug(v ...interface{}) {
+func (this *loggerImpl) Writer() io.Writer {
+	return _logger.Writer()
+}
+
+func (this *loggerImpl) Debug(v ...interface{}) {
 	Debug(v)
 }
 
-func (this *FmtLogger) Debugf(format string, v ...interface{}) {
+func (this *loggerImpl) Debugf(format string, v ...interface{}) {
 	Debug(fmt.Sprintf(format, v))
 }
 
-func (this *FmtLogger) Info(v ...interface{}) {
+func (this *loggerImpl) Info(v ...interface{}) {
 	Info(v)
 }
 
-func (this *FmtLogger) Infof(format string, v ...interface{}) {
+func (this *loggerImpl) Infof(format string, v ...interface{}) {
 	Info(fmt.Sprintf(format, v))
 }
 
-func (this *FmtLogger) Warn(v ...interface{}) {
+func (this *loggerImpl) Warn(v ...interface{}) {
 	Warn(v)
 }
 
-func (this *FmtLogger) Warnf(format string, v ...interface{}) {
+func (this *loggerImpl) Warnf(format string, v ...interface{}) {
 	Warn(fmt.Sprintf(format, v))
 }
 
-func (this *FmtLogger) Error(v ...interface{}) {
+func (this *loggerImpl) Error(v ...interface{}) {
 	Error(v)
 }
 
-func (this *FmtLogger) Errorf(format string, v ...interface{}) {
+func (this *loggerImpl) Errorf(format string, v ...interface{}) {
 	Error(fmt.Sprintf(format, v))
 }
 
-func (this *FmtLogger) Fatal(v ...interface{}) {
+func (this *loggerImpl) Fatal(v ...interface{}) {
 	Fatal(v)
 }
 
-func (this *FmtLogger) Fatalf(format string, v ...interface{}) {
+func (this *loggerImpl) Fatalf(format string, v ...interface{}) {
 	Fatal(fmt.Sprintf(format, v))
 }
 
-func (this *FmtLogger) Panic(v ...interface{}) {
+func (this *loggerImpl) Panic(v ...interface{}) {
 	Fatal(v)
 }
 
-func (this *FmtLogger) Panicf(format string, v ...interface{}) {
+func (this *loggerImpl) Panicf(format string, v ...interface{}) {
 	Fatal(fmt.Sprintf(format, v))
 }
 

@@ -14,7 +14,7 @@ const (
 
 
 func getLogFilePath() string {
-	return fmt.Sprintf("%s%s", _config.RuntimeRootPath, _config.LogSavePath)
+	return _config.LogSavePath
 }
 
 func getLastDayLogFileName() string {
