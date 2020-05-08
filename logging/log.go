@@ -15,6 +15,10 @@ import (
 type ILogger interface {
 	Writer() io.Writer
 
+	Gin(v ...interface{})
+	Rpcx(v ...interface{})
+	Db(v ...interface{})
+
 	Debug(v ...interface{})
 	Debugf(format string, v ...interface{})
 
@@ -37,14 +41,13 @@ type ILogger interface {
 const (
 	_defaultPrefix      = ""
 	_defaultCallerDepth = 2
-
 )
 var (
-	_levelFlags = []string{"DEBUG", "INFO", "WARN", "ERROR", "FATAL"}
 	_file 		*os.File
 	_logger     *log.Logger
 	_lock       sync.RWMutex
 	_rotating 	sync.WaitGroup
+	_logMsgCh	chan LogMessage = make(chan LogMessage)
 )
 
 type LogConfig struct {
@@ -71,55 +74,77 @@ func Setup(config LogConfig) {
 	}
 	_logger = log.New(_file, _defaultPrefix, log.LstdFlags)
 
+	go logPrint(_logMsgCh)
 	rotateTimingStart()
 }
 
-type Level int
+type LevelFlag string
 const (
-	LEVEL_DEBUG Level = iota
-	LEVEL_INFO
-	LEVEL_WARNING
-	LEVEL_ERROR
-	LEVEL_FATAL
+
+	LEVEL_FLAG_GIN 		= "GIN"
+	LEVEL_FLAG_RPCX		= "RPCX"
+	LEVEL_FLAG_DB		= "DB"
+	LEVEL_FLAG_DEBUG	= "DEBUG"
+	LEVEL_FLAG_INFO		= "INFO"
+	LEVEL_FLAG_WARNING	= "WARN"
+	LEVEL_FLAG_ERROR	= "ERROR"
+	LEVEL_FLAG_FATAL	= "FATAL"
 )
 
+type LogMessage struct {
+	Flag  LevelFlag
+	Value []interface{}
+}
+func logPrint(msgCh <-chan LogMessage)  {
+	for msg := range msgCh {
+		setPrefix(msg.Flag)
+		_rotating.Wait()
+		_logger.Print(msg.Value...)
+	}
+}
+
 func Debug(v ...interface{})  {
-	setPrefix(LEVEL_DEBUG)
-	_rotating.Wait()
-	_logger.Print(v)
+	_logMsgCh <- LogMessage{
+		LEVEL_FLAG_DEBUG,
+		v,
+	}
 }
 
 func Info(v ...interface{})  {
-	setPrefix(LEVEL_INFO)
-	_rotating.Wait()
-	_logger.Print(v)
+	_logMsgCh <- LogMessage{
+		LEVEL_FLAG_INFO,
+		v,
+	}
 }
 
 func Warn(v ...interface{})  {
-	setPrefix(LEVEL_WARNING)
-	_rotating.Wait()
-	_logger.Print(v)
+	_logMsgCh <- LogMessage{
+		LEVEL_FLAG_WARNING,
+		v,
+	}
 }
 
 func Error(v ...interface{})  {
-	setPrefix(LEVEL_ERROR)
-	_rotating.Wait()
-	_logger.Print(v)
+	_logMsgCh <- LogMessage{
+		LEVEL_FLAG_ERROR,
+		v,
+	}
 }
 
 func Fatal(v ...interface{})  {
-	setPrefix(LEVEL_FATAL)
-	_rotating.Wait()
-	_logger.Print(v)
+	_logMsgCh <- LogMessage{
+		LEVEL_FLAG_FATAL,
+		v,
+	}
 }
 
-func setPrefix(level Level)  {
+func setPrefix(flag LevelFlag)  {
 	_, file, line, ok := runtime.Caller(_defaultCallerDepth)
 	var logPrefix string
 	if ok {
-		logPrefix = fmt.Sprintf("[%s]:[%s:%d]", _levelFlags[level], filepath.Base(file), line)
+		logPrefix = fmt.Sprintf("[%s]:[%s:%d]", flag, filepath.Base(file), line)
 	} else {
-		logPrefix = fmt.Sprintf("[%s]", _levelFlags[level])
+		logPrefix = fmt.Sprintf("[%s]", flag)
 	}
 	_logger.SetPrefix(logPrefix)
 }
@@ -151,6 +176,27 @@ func Logger() ILogger {
 
 func (this *loggerImpl) Writer() io.Writer {
 	return _logger.Writer()
+}
+
+func (this *loggerImpl) Gin(v ...interface{}) {
+	_logMsgCh <- LogMessage{
+		LEVEL_FLAG_GIN,
+		v,
+	}
+}
+
+func (this *loggerImpl) Rpcx(v ...interface{}) {
+	_logMsgCh <- LogMessage{
+		LEVEL_FLAG_RPCX,
+		v,
+	}
+}
+
+func (this *loggerImpl) Db(v ...interface{}) {
+	_logMsgCh <- LogMessage{
+		LEVEL_FLAG_DB,
+		v,
+	}
 }
 
 func (this *loggerImpl) Debug(v ...interface{}) {

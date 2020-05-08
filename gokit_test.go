@@ -2,26 +2,33 @@ package gokit
 
 import (
 	"fmt"
-	"github.com/sean-tech/gokit/foundation"
 	"github.com/sean-tech/gokit/logging"
 	"sync"
 	"testing"
 )
 
+var wg sync.WaitGroup
+
 func TestLog1(t *testing.T) {
 	logging.Setup(logging.LogConfig{
-		RunMode:         foundation.RUN_MODE_DEBUG,
-		RuntimeRootPath: "/Users/lyra/",
-		LogSavePath:     "Desktop/",
+		LogSavePath:     "/Users/lyra/Desktop/",
 		LogPrefix:       "test",
 	})
 	for i := 0; i < 100000; i++ {
 		logging.Debug(i)
 	}
+
+	//wg.Add(100000)
+	//for i := 0; i < 100000; i++ {
+	//	go func(num int) {
+	//		logging.Debug(num)
+	//		wg.Done()
+	//	}(i)
+	//}
+	//wg.Wait()
 	fmt.Println("over")
 }
 
-var wg sync.WaitGroup
 func TestGoroute(t *testing.T) {
 	wg.Add(1)
 	go func() {
