@@ -37,6 +37,18 @@ func NewRequestion(ctx GinContext) *Requisition {
 }
 
 /**
+ * 创建包含请求信息实例的context，并绑定至context上
+ */
+func NewRequestionContext(ctx context.Context) context.Context {
+	rq := &Requisition{
+		RequestId:       0,
+		UserId:          0,
+		UserName:        "",
+	}
+	return context.WithValue(ctx, key_ctx_requestion, rq)
+}
+
+/**
  * 信息获取，获取传输链上context绑定的用户请求调用信息
  */
 func GetRequisition(ctx context.Context) *Requisition {

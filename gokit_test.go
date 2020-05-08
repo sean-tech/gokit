@@ -1,7 +1,9 @@
 package gokit
 
 import (
+	"context"
 	"fmt"
+	"github.com/sean-tech/gokit/foundation"
 	"github.com/sean-tech/gokit/logging"
 	"sync"
 	"testing"
@@ -48,4 +50,10 @@ func TestGoroute(t *testing.T) {
 func print()  {
 	wg.Wait()
 	fmt.Println("p")
+}
+
+func TestRequestion(t *testing.T) {
+	ctx := foundation.NewRequestionContext(context.Background())
+	foundation.GetRequisition(ctx).RequestId = 123456
+	fmt.Print(foundation.GetRequisition(ctx))
 }
