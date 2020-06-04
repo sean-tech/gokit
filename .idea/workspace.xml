@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="210c369e-51d0-4461-a12a-86c8aa2ca6f6" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/foundation/atomic.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/foundation/atomic_test.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/storage/hash.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/storage/memory.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/storage/storage_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Go File" />
+      </list>
+    </option>
+  </component>
+  <component name="GOROOT" path="/usr/local/go" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1aWZWxt7KSmZwzzfFUgPW4L5Tre" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
+    <property name="DefaultGoTemplateProperty" value="Go File" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="configurable.Global.GOPATH.is.expanded" value="true" />
+    <property name="configurable.Module.GOPATH.is.expanded" value="false" />
+    <property name="configurable.Project.GOPATH.is.expanded" value="true" />
+    <property name="go.import.settings.migrated" value="true" />
+    <property name="go.sdk.automatically.set" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
+    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="settings.editor.selected.configurable" value="go.vgo" />
+  </component>
+  <component name="RunManager" selected="Go Test.TestHash in github.com/sean-tech/gokit/storage">
+    <configuration name="TestHash in github.com/sean-tech/gokit/storage" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="gokit" />
+      <working_directory value="$PROJECT_DIR$/storage" />
+      <framework value="gotest" />
+      <kind value="PACKAGE" />
+      <package value="github.com/sean-tech/gokit/storage" />
+      <directory value="$PROJECT_DIR$/" />
+      <filePath value="$PROJECT_DIR$/" />
+      <pattern value="^TestHash$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestHashStorageImpl_HashLen in github.com/sean-tech/gokit/storage" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="gokit" />
+      <working_directory value="$PROJECT_DIR$/storage" />
+      <framework value="gotest" />
+      <kind value="PACKAGE" />
+      <package value="github.com/sean-tech/gokit/storage" />
+      <directory value="$PROJECT_DIR$/" />
+      <filePath value="$PROJECT_DIR$/" />
+      <pattern value="^TestHashStorageImpl_HashLen$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestHashStorageImpl_HashSet in github.com/sean-tech/gokit/storage" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="gokit" />
+      <working_directory value="$PROJECT_DIR$/storage" />
+      <framework value="gotest" />
+      <kind value="PACKAGE" />
+      <package value="github.com/sean-tech/gokit/storage" />
+      <directory value="$PROJECT_DIR$/" />
+      <filePath value="$PROJECT_DIR$/" />
+      <pattern value="^TestHashStorageImpl_HashSet$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestInt32 in github.com/sean-tech/gokit/foundation" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="gokit" />
+      <working_directory value="$PROJECT_DIR$/foundation" />
+      <framework value="gotest" />
+      <kind value="PACKAGE" />
+      <package value="github.com/sean-tech/gokit/foundation" />
+      <directory value="$PROJECT_DIR$/" />
+      <filePath value="$PROJECT_DIR$/" />
+      <pattern value="^TestInt32$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestMemory2 in github.com/sean-tech/gokit/storage" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="gokit" />
+      <working_directory value="$PROJECT_DIR$/storage" />
+      <framework value="gotest" />
+      <kind value="PACKAGE" />
+      <package value="github.com/sean-tech/gokit/storage" />
+      <directory value="$PROJECT_DIR$/" />
+      <filePath value="$PROJECT_DIR$/" />
+      <pattern value="^TestMemory2$" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Go Test.TestHash in github.com/sean-tech/gokit/storage" />
+        <item itemvalue="Go Test.TestHashStorageImpl_HashLen in github.com/sean-tech/gokit/storage" />
+        <item itemvalue="Go Test.TestHashStorageImpl_HashSet in github.com/sean-tech/gokit/storage" />
+        <item itemvalue="Go Test.TestInt32 in github.com/sean-tech/gokit/foundation" />
+        <item itemvalue="Go Test.TestMemory2 in github.com/sean-tech/gokit/storage" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="2" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+  </component>
+  <component name="VgoProject">
+    <integration-enabled>true</integration-enabled>
+    <environment>
+      <map>
+        <entry key="GOPROXY" value="https://goproxy.io" />
+      </map>
+    </environment>
+    <proxy>https://goproxy.io</proxy>
+  </component>
+  <component name="WindowStateProjectService">
+    <state width="1960" height="367" key="GridCell.Tab.0.bottom" timestamp="1591259745060">
+      <screen x="0" y="22" width="2560" height="1418" />
+    </state>
+    <state width="1960" height="367" key="GridCell.Tab.0.bottom/0.22.2560.1418@0.22.2560.1418" timestamp="1591259745060" />
+    <state width="1960" height="367" key="GridCell.Tab.0.center" timestamp="1591259745059">
+      <screen x="0" y="22" width="2560" height="1418" />
+    </state>
+    <state width="1960" height="367" key="GridCell.Tab.0.center/0.22.2560.1418@0.22.2560.1418" timestamp="1591259745059" />
+    <state width="1960" height="367" key="GridCell.Tab.0.left" timestamp="1591259745059">
+      <screen x="0" y="22" width="2560" height="1418" />
+    </state>
+    <state width="1960" height="367" key="GridCell.Tab.0.left/0.22.2560.1418@0.22.2560.1418" timestamp="1591259745059" />
+    <state width="1960" height="367" key="GridCell.Tab.0.right" timestamp="1591259745060">
+      <screen x="0" y="22" width="2560" height="1418" />
+    </state>
+    <state width="1960" height="367" key="GridCell.Tab.0.right/0.22.2560.1418@0.22.2560.1418" timestamp="1591259745060" />
+    <state x="979" y="442" width="598" height="490" key="find.popup" timestamp="1588919528625">
+      <screen x="0" y="22" width="2560" height="1418" />
+    </state>
+    <state x="979" y="442" width="598" height="490" key="find.popup/0.22.2560.1418@0.22.2560.1418" timestamp="1588919528625" />
+    <state x="1013" y="683" key="vcs.readOnlyHandler.ReadOnlyStatusDialog" timestamp="1591255830492">
+      <screen x="0" y="22" width="2560" height="1418" />
+    </state>
+    <state x="1013" y="683" key="vcs.readOnlyHandler.ReadOnlyStatusDialog/0.22.2560.1418@0.22.2560.1418" timestamp="1591255830492" />
+  </component>
+</project>
