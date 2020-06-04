@@ -58,6 +58,8 @@ func TestHash(t *testing.T) {
 const (
 	key = "hashKey"
 	field = "field"
+	key2 = "hashKey2"
+	field2 = "field2"
 )
 
 func hdel(t *testing.T) {
@@ -93,7 +95,7 @@ func hget(t *testing.T) {
 }
 
 func hmset(t *testing.T) {
-	if err := Hash().HashMSet(key, field, "valzczczczxc"); err != nil {
+	if err := Hash().HashMSet(key2, field2, "valzczczczxc"); err != nil {
 		t.Error(err)
 	} else {
 		fmt.Println("hmset success")
@@ -101,7 +103,7 @@ func hmset(t *testing.T) {
 }
 
 func hmget(t *testing.T) {
-	if val, err := Hash().HashMGet(key, field); err != nil {
+	if val, err := Hash().HashMGet(key2, field2); err != nil {
 		t.Error(err)
 	} else {
 		fmt.Printf("hmget success : %+v\n", val)

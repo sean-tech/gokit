@@ -32,27 +32,33 @@ func Hash() IHashStorage {
 	return _hashStorage
 }
 
+type hashTable struct {
+	hashMap sync.Map
+	len *foundation.Int64
+}
 func NewHashStorage() IHashStorage {
 	return new(hashStorageImpl)
 }
 
 type hashStorageImpl struct {
 	hashStorageMap sync.Map
-	len foundation.Int64
 }
 
-func (this *hashStorageImpl) newHashTable(key string) *sync.Map {
-	var hashTable = new(sync.Map)
+func (this *hashStorageImpl) newHashTable(key string) *hashTable {
+	var hashTable = &hashTable{
+		hashMap: sync.Map{},
+		len:     foundation.NewInt64(0),
+	}
 	this.hashStorageMap.Store(key, hashTable)
 	return hashTable
 }
 
-func (this *hashStorageImpl) getHashTable(key string) (*sync.Map, bool) {
+func (this *hashStorageImpl) getHashTable(key string) (*hashTable, bool) {
 	hashInter, ok := this.hashStorageMap.Load(key)
 	if ok == false {
 		return nil, false
 	}
-	hashTable, ok := hashInter.(*sync.Map)
+	hashTable, ok := hashInter.(*hashTable)
 	if ok == false {
 		return nil, false
 	}
@@ -65,12 +71,16 @@ func (this *hashStorageImpl) HashExists(key, field string) (bool, error) {
 	if ok == false {
 		return ok, nil
 	}
-	_, ok = hashTable.Load(field)
+	_, ok = hashTable.hashMap.Load(field)
 	return ok, nil
 }
 
 func (this *hashStorageImpl) HashLen(key string) (int64, error) {
-	return this.len.Load(), nil
+	hashTable, ok := this.getHashTable(key)
+	if ok == false {
+		return 0, nil
+	}
+	return hashTable.len.Load(), nil
 }
 
 func (this *hashStorageImpl) HashSet(key string, values ...interface{}) error {
@@ -83,10 +93,10 @@ func (this *hashStorageImpl) HashSet(key string, values ...interface{}) error {
 	}
 	for idx := 1; idx < len(values); idx ++ {
 		k := values[idx-1]; v := values[idx]
-		if _, ok = hashTable.Load(k); ok == false {
-			this.len.Add(1)
+		if _, ok = hashTable.hashMap.Load(k); ok == false {
+			hashTable.len.Add(1)
 		}
-		hashTable.Store(k, v)
+		hashTable.hashMap.Store(k, v)
 	}
 	return nil
 }
@@ -96,10 +106,19 @@ func (this *hashStorageImpl) HashGet(key, field string) (string, error) {
 	if ok == false {
 		return "", errors.New("hashtable in hashstorage : nil")
 	}
-	if valInter, ok := hashTable.Load(field); ok {
-		return valInter.(string), nil
-	} else {
+	value, ok := hashTable.hashMap.Load(field)
+	if ok == false {
 		return "", errors.New("hashstorage : nil")
+	}
+	switch value.(type) {
+	case string:
+		return value.(string), nil
+	case byte:
+		return string(value.(byte)), nil
+	case []byte:
+		return string(value.([]byte)), nil
+	default:
+		return "", nil
 	}
 }
 
@@ -115,7 +134,7 @@ func (this *hashStorageImpl) HashMGet(key string, fields ...string) ([]interface
 		return values, nil
 	}
 	for _, field := range fields {
-		if valInter, ok := hashTable.Load(field); ok {
+		if valInter, ok := hashTable.hashMap.Load(field); ok {
 			values = append(values, valInter)
 		} else {
 			values = append(values, "")
@@ -130,9 +149,9 @@ func (this *hashStorageImpl) HashDelete(key string, fields ...string) error {
 		return nil
 	}
 	for _, field := range fields {
-		if _, ok := hashTable.Load(field); ok {
-			hashTable.Delete(field)
-			this.len.Sub(1)
+		if _, ok := hashTable.hashMap.Load(field); ok {
+			hashTable.hashMap.Delete(field)
+			hashTable.len.Sub(1)
 		}
 	}
 	return nil
@@ -144,7 +163,7 @@ func (this *hashStorageImpl) HashKeys(key string) ([]string, error) {
 	if ok == false {
 		return keys, nil
 	}
-	hashTable.Range(func(key, value interface{}) bool {
+	hashTable.hashMap.Range(func(key, value interface{}) bool {
 		keys = append(keys, key.(string))
 		return true
 	})
@@ -157,8 +176,8 @@ func (this *hashStorageImpl) HashVals(key string) ([]string, error) {
 	if ok == false {
 		return values, nil
 	}
-	hashTable.Range(func(key, value interface{}) bool {
-		values = append(values, key.(string))
+	hashTable.hashMap.Range(func(key, value interface{}) bool {
+		values = append(values, value.(string))
 		return true
 	})
 	return values, nil
@@ -170,7 +189,7 @@ func (this *hashStorageImpl) HashGetAll(key string) (map[string]string, error) {
 	if ok == false {
 		return m, nil
 	}
-	hashTable.Range(func(key, value interface{}) bool {
+	hashTable.hashMap.Range(func(key, value interface{}) bool {
 		m[key.(string)] = value.(string)
 		return true
 	})
