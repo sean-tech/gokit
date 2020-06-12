@@ -1,12 +1,14 @@
 package foundation
 
-type Error struct {
-	code int
-	msg  string
+type IError interface {
+	Code() int
+	Msg() string
 }
 
-func (this *Error) Error() string {
-	return this.msg
+type Error struct {
+	error
+	code 	int
+	msg  	string
 }
 
 func (this *Error) Code() int {
@@ -17,9 +19,10 @@ func (this *Error) Msg() string {
 	return this.msg
 }
 
-func NewError(code int, msg string) *Error {
+func NewError(err error, code int, msg string) *Error {
 	return &Error{
-		code: code,
-		msg:  msg,
+		error: err,
+		code:  code,
+		msg:   msg,
 	}
 }

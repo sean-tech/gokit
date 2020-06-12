@@ -3,8 +3,8 @@ package gokit
 import (
 	"context"
 	"fmt"
-	"github.com/sean-tech/gokit/foundation"
 	"github.com/sean-tech/gokit/logging"
+	"github.com/sean-tech/gokit/requisition"
 	"sync"
 	"testing"
 )
@@ -53,7 +53,7 @@ func print()  {
 }
 
 func TestRequestion(t *testing.T) {
-	ctx := foundation.NewRequestionContext(context.Background())
-	foundation.GetRequisition(ctx).RequestId = 123456
-	fmt.Print(foundation.GetRequisition(ctx))
+	ctx := requisition.NewRequestionContext(context.Background())
+	requisition.GetRequisition(ctx).RequestId = 123456
+	fmt.Print(requisition.GetRequisition(ctx))
 }

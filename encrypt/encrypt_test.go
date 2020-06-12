@@ -10,7 +10,12 @@ import (
 )
 
 func TestMd5EncryptImpl_EncryptWithTimestamp(t *testing.T) {
-	GetMd5().EncryptWithTimestamp([]byte("i am yang"), 0)
+	key := "ajsdhjbzjxcbzhcb"
+	value := "this is test value"
+	enc := GetMd5().Encode([]byte(value))
+	fmt.Println(enc)
+	enc = GetMd5().HmacEncode([]byte(key), []byte(value))
+	fmt.Println(enc)
 }
 
 func TestRsaEncryptImpl_Encrypt(t *testing.T) {

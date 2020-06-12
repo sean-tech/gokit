@@ -8,9 +8,9 @@ import (
 	"io"
 )
 
-type aesEncryptImpl struct {}
+type aesImpl struct {}
 
-func (this *aesEncryptImpl) EncryptCBC(origData []byte, key []byte) (encrypted []byte, err error) {
+func (this *aesImpl) EncryptCBC(origData []byte, key []byte) (encrypted []byte, err error) {
 	// 分组秘钥
 	// NewCipher该函数限制了输入k的长度必须为16, 24或者32
 	block, err := aes.NewCipher(key)
@@ -26,7 +26,7 @@ func (this *aesEncryptImpl) EncryptCBC(origData []byte, key []byte) (encrypted [
 	return encrypted, nil
 }
 
-func (this *aesEncryptImpl) DecryptCBC(encrypted []byte, key []byte) (decrypted []byte, err error) {
+func (this *aesImpl) DecryptCBC(encrypted []byte, key []byte) (decrypted []byte, err error) {
 	block, err := aes.NewCipher(key)                              // 分组秘钥
 	if err != nil {
 		return nil, err
@@ -40,7 +40,7 @@ func (this *aesEncryptImpl) DecryptCBC(encrypted []byte, key []byte) (decrypted 
 	return decrypted, nil
 }
 
-func (this *aesEncryptImpl) GenerateKey() []byte {
+func (this *aesImpl) GenerateKey() []byte {
 	key := make([]byte, 16)
 	rand.Read(key)
 	return key
@@ -63,7 +63,7 @@ func pkcs7UnPadding(origData []byte) []byte {
 
 
 // =================== ECB ======================
-func (this *aesEncryptImpl) EncryptECB(origData []byte, key []byte) (encrypted []byte) {
+func (this *aesImpl) EncryptECB(origData []byte, key []byte) (encrypted []byte) {
 	cipher, _ := aes.NewCipher(generateKey(key))
 	length := (len(origData) + aes.BlockSize) / aes.BlockSize
 	plain := make([]byte, length*aes.BlockSize)
@@ -80,7 +80,7 @@ func (this *aesEncryptImpl) EncryptECB(origData []byte, key []byte) (encrypted [
 
 	return encrypted
 }
-func (this *aesEncryptImpl) DecryptECB(encrypted []byte, key []byte) (decrypted []byte) {
+func (this *aesImpl) DecryptECB(encrypted []byte, key []byte) (decrypted []byte) {
 	cipher, _ := aes.NewCipher(generateKey(key))
 	decrypted = make([]byte, len(encrypted))
 	//
@@ -107,7 +107,7 @@ func generateKey(key []byte) (genKey []byte) {
 }
 
 // =================== CFB ======================
-func (this *aesEncryptImpl) EncryptCFB(origData []byte, key []byte) (encrypted []byte) {
+func (this *aesImpl) EncryptCFB(origData []byte, key []byte) (encrypted []byte) {
 	block, err := aes.NewCipher(key)
 	if err != nil {
 		panic(err)
@@ -122,7 +122,7 @@ func (this *aesEncryptImpl) EncryptCFB(origData []byte, key []byte) (encrypted [
 	return encrypted
 }
 
-func (this *aesEncryptImpl) DecryptCFB(encrypted []byte, key []byte) (decrypted []byte) {
+func (this *aesImpl) DecryptCFB(encrypted []byte, key []byte) (decrypted []byte) {
 	block, _ := aes.NewCipher(key)
 	if len(encrypted) < aes.BlockSize {
 		panic("ciphertext too short")

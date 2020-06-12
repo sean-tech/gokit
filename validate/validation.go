@@ -3,11 +3,17 @@ package validate
 import (
 	"errors"
 	"fmt"
+	"github.com/sean-tech/gokit/foundation"
 	"gopkg.in/go-playground/validator.v9"
 	"log"
 	"reflect"
 	"regexp"
 	"sync"
+)
+
+const (
+	err_code_invalid_params = 400
+	err_msg_invalid_params  = "invalid params"
 )
 
 type Tag string
@@ -95,11 +101,11 @@ func ValidateParameter(parameter interface{}) error {
 		return nil
 	}
 	if _, ok := err.(*validator.InvalidValidationError); ok {
-		return err
+		return foundation.NewError(err, err_code_invalid_params, err_msg_invalid_params)
 	}
 	for _, err := range err.(validator.ValidationErrors) {
 		info := fmt.Sprintf("%v", err)
-		return errors.New(info)
+		return foundation.NewError(errors.New(info), err_code_invalid_params, err_msg_invalid_params)
 	}
 	return nil
 }
@@ -119,7 +125,7 @@ func ValidateRegexpTagParameter(parameter interface{}) error {
 		filedName := s.Field(i).Name
 		ok, err := regexp.MatchString(pattern, v.FieldByName(filedName).String())
 		if err != nil || !ok {
-			return err
+			return foundation.NewError(err, err_code_invalid_params, err_msg_invalid_params)
 		}
 	}
 	return nil

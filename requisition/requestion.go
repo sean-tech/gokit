@@ -1,13 +1,12 @@
-package foundation
+package requisition
 
 import (
 	"context"
 )
 
 const (
-	key_ctx_requestion = "key_ctx_requestion"
+	key_ctx_requestion = "sean-tech/gokit/key_ctx_requestion"
 )
-
 
 /**
  * 服务信息
@@ -17,6 +16,7 @@ type Requisition struct {
 	UserId          uint64        `json:"userId"`
 	UserName        string        `json:"userName"`
 	RoleId          uint64        `json:"roleId"`
+	Lang			Language
 }
 
 type GinContext interface {
@@ -29,9 +29,11 @@ type GinContext interface {
  */
 func NewRequestion(ctx GinContext) *Requisition {
 	rq := &Requisition{
-		RequestId:       0,
-		UserId:          0,
-		UserName:        "",
+		RequestId:      0,
+		UserId:         0,
+		UserName:       "",
+		RoleId: 		0,
+		Lang: 			LangeageZh,
 	}
 	ctx.Set(key_ctx_requestion, rq)
 	return rq
@@ -42,9 +44,11 @@ func NewRequestion(ctx GinContext) *Requisition {
  */
 func NewRequestionContext(ctx context.Context) context.Context {
 	rq := &Requisition{
-		RequestId:       0,
-		UserId:          0,
-		UserName:        "",
+		RequestId:      0,
+		UserId:         0,
+		UserName:       "",
+		RoleId: 		0,
+		Lang: 			LangeageZh,
 	}
 	return context.WithValue(ctx, key_ctx_requestion, rq)
 }
@@ -73,4 +77,6 @@ func CheckRequisitionInfo(ctx context.Context, userId uint64, userName string) b
 	}
 	return true
 }
+
+
 

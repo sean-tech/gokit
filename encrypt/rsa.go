@@ -11,12 +11,12 @@ import (
 	"errors"
 )
 
-type rsaEncryptImpl struct {}
+type rsaImpl struct {}
 
 /**
  * 公钥加密
  */
-func (this *rsaEncryptImpl) Encrypt(publicKey string, data []byte) ([]byte, error) {
+func (this *rsaImpl) Encrypt(publicKey string, data []byte) ([]byte, error) {
 	publicKeyBytes := []byte(publicKey)
 	block, _ := pem.Decode(publicKeyBytes)
 	if block == nil {
@@ -45,7 +45,7 @@ func (this *rsaEncryptImpl) Encrypt(publicKey string, data []byte) ([]byte, erro
 /**
  * 私钥解密(PKCS8)
  */
-func (this *rsaEncryptImpl) Decrypt(privateKey string, data []byte) ([]byte, error) {
+func (this *rsaImpl) Decrypt(privateKey string, data []byte) ([]byte, error) {
 	pri_Key_bye := []byte(privateKey)
 
 	blockPri, _ := pem.Decode(pri_Key_bye)
@@ -79,7 +79,7 @@ func (this *rsaEncryptImpl) Decrypt(privateKey string, data []byte) ([]byte, err
 /**
  * 私钥签名(PKCS8)
  */
-func (this *rsaEncryptImpl) Sign(privateKey string, data []byte) ([]byte, error) {
+func (this *rsaImpl) Sign(privateKey string, data []byte) ([]byte, error) {
 	pri_Key_bye := []byte(privateKey)
 
 	blockPri, _ := pem.Decode(pri_Key_bye)
@@ -93,7 +93,7 @@ func (this *rsaEncryptImpl) Sign(privateKey string, data []byte) ([]byte, error)
 	}
 	priKey := prkI.(*rsa.PrivateKey)
 
-	//hashedStr := GetMd5().Encrypt(data)
+	//hashedStr := GetMd5().Encode(data)
 	//hashed,_ := hex.DecodeString(hashedStr)
 	h := sha1.New()
 	h.Write(data)
@@ -105,7 +105,7 @@ func (this *rsaEncryptImpl) Sign(privateKey string, data []byte) ([]byte, error)
 /**
  * 公钥验签
  */
-func (this *rsaEncryptImpl) Verify(publicKey string, data []byte, signedData []byte) error {
+func (this *rsaImpl) Verify(publicKey string, data []byte, signedData []byte) error {
 	pub_Key_bye := []byte(publicKey)
 
 	blockPri, _ := pem.Decode(pub_Key_bye)
@@ -123,7 +123,7 @@ func (this *rsaEncryptImpl) Verify(publicKey string, data []byte, signedData []b
 	h.Write(data)
 	hashed := h.Sum(nil)
 
-	//hashedStr := GetMd5().Encrypt(data)
+	//hashedStr := GetMd5().Encode(data)
 	//hashed,_ := hex.DecodeString(hashedStr)
 
 	return rsa.VerifyPKCS1v15(pubKey, crypto.SHA1, hashed, signedData)
