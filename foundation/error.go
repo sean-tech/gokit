@@ -1,5 +1,10 @@
 package foundation
 
+import (
+	"errors"
+	"fmt"
+)
+
 type IError interface {
 	Code() int
 	Msg() string
@@ -20,6 +25,9 @@ func (this *Error) Msg() string {
 }
 
 func NewError(err error, code int, msg string) *Error {
+	if err == nil {
+		err = errors.New(fmt.Sprintf("code:%d,msg:%s", code, msg))
+	}
 	return &Error{
 		error: err,
 		code:  code,
