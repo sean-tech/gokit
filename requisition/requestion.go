@@ -16,7 +16,6 @@ type Requisition struct {
 	UserId          uint64        `json:"userId"`
 	UserName        string        `json:"userName"`
 	RoleId          uint64        `json:"roleId"`
-	Lang			Language
 }
 
 type GinContext interface {
@@ -33,7 +32,6 @@ func NewRequestion(ctx GinContext) *Requisition {
 		UserId:         0,
 		UserName:       "",
 		RoleId: 		0,
-		Lang: 			LangeageZh,
 	}
 	ctx.Set(key_ctx_requestion, rq)
 	return rq
@@ -48,7 +46,6 @@ func NewRequestionContext(ctx context.Context) context.Context {
 		UserId:         0,
 		UserName:       "",
 		RoleId: 		0,
-		Lang: 			LangeageZh,
 	}
 	return context.WithValue(ctx, key_ctx_requestion, rq)
 }

@@ -3,7 +3,6 @@ package gokit
 import (
 	"context"
 	"fmt"
-	"github.com/sean-tech/gokit/logging"
 	"github.com/sean-tech/gokit/requisition"
 	"sync"
 	"testing"
@@ -12,13 +11,13 @@ import (
 var wg sync.WaitGroup
 
 func TestLog1(t *testing.T) {
-	logging.Setup(logging.LogConfig{
-		LogSavePath:     "/Users/lyra/Desktop/",
-		LogPrefix:       "test",
-	})
-	for i := 0; i < 100000; i++ {
-		logging.Debug(i)
-	}
+	//logging.Setup(logging.LogConfig{
+	//	LogSavePath:     "/Users/lyra/Desktop/",
+	//	LogPrefix:       "test",
+	//})
+	//for i := 0; i < 100000; i++ {
+	//	logging.Debug(i)
+	//}
 
 	//wg.Add(100000)
 	//for i := 0; i < 100000; i++ {
