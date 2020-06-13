@@ -11,42 +11,42 @@ type codeMsg struct {
 	codeMap  map[Language]map[int]string
 }
 
-var CodeMsg = &codeMsg{
+var _codemsg = &codeMsg{
 	codeMap: make(map[Language]map[int]string),
 }
 
 func init() {
 	en := make(map[int]string)
-	CodeMsg.codeMap[LanguageEn] = en
+	_codemsg.codeMap[LanguageEn] = en
 	cn := make(map[int]string)
-	CodeMsg.codeMap[LangeageZh] = cn
+	_codemsg.codeMap[LangeageZh] = cn
 }
 
-func (this *codeMsg) LanguageAdd(lang Language)  {
-	this.codeMap[lang] = make(map[int]string)
+func AddMsgLanguage(lang Language)  {
+	_codemsg.codeMap[lang] = make(map[int]string)
 }
 
-func (this *codeMsg) SetMsgMap(lang Language, msgMap map[int]string) {
-	if codemsg, ok := this.codeMap[lang]; ok {
+func SetMsgMap(lang Language, msgMap map[int]string) {
+	if codemsg, ok := _codemsg.codeMap[lang]; ok {
 		for k, v := range msgMap {
 			codemsg[k] = v
 		}
 	} else {
-		this.codeMap[lang] = msgMap
+		_codemsg.codeMap[lang] = msgMap
 	}
 }
 
-func (this *codeMsg) SetMsg(lang Language, code int, msg string) {
-	if codemsg, ok := this.codeMap[lang]; ok {
+func SetMsg(lang Language, code int, msg string) {
+	if codemsg, ok := _codemsg.codeMap[lang]; ok {
 		codemsg[code] = msg
 	} else {
-		this.LanguageAdd(lang)
-		this.codeMap[lang][code] = msg
+		AddMsgLanguage(lang)
+		_codemsg.codeMap[lang][code] = msg
 	}
 }
 
-func (this *codeMsg) Msg(lang Language, code int) string {
-	if codemsg, ok := this.codeMap[lang]; ok {
+func Msg(lang Language, code int) string {
+	if codemsg, ok := _codemsg.codeMap[lang]; ok {
 		if msg, ok := codemsg[code]; ok {
 			return msg
 		}
