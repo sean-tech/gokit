@@ -6,6 +6,7 @@ import (
 )
 
 type IError interface {
+	error
 	Code() int
 	Msg() string
 }
