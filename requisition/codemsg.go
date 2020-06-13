@@ -1,18 +1,17 @@
 package requisition
 
-type Language string
 const (
-	LangeageZh Language = "zh_CN"
-	LanguageEn Language = "en_US"
+	LangeageZh string = "zh_CN"
+	LanguageEn string = "en_US"
 )
 
 type codeMsg struct {
-	language Language
-	codeMap  map[Language]map[int]string
+	language string
+	codeMap  map[string]map[int]string
 }
 
 var _codemsg = &codeMsg{
-	codeMap: make(map[Language]map[int]string),
+	codeMap: make(map[string]map[int]string),
 }
 
 func init() {
@@ -22,11 +21,11 @@ func init() {
 	_codemsg.codeMap[LangeageZh] = cn
 }
 
-func AddMsgLanguage(lang Language)  {
+func AddMsgLanguage(lang string)  {
 	_codemsg.codeMap[lang] = make(map[int]string)
 }
 
-func SetMsgMap(lang Language, msgMap map[int]string) {
+func SetMsgMap(lang string, msgMap map[int]string) {
 	if codemsg, ok := _codemsg.codeMap[lang]; ok {
 		for k, v := range msgMap {
 			codemsg[k] = v
@@ -36,7 +35,7 @@ func SetMsgMap(lang Language, msgMap map[int]string) {
 	}
 }
 
-func SetMsg(lang Language, code int, msg string) {
+func SetMsg(lang string, code int, msg string) {
 	if codemsg, ok := _codemsg.codeMap[lang]; ok {
 		codemsg[code] = msg
 	} else {
@@ -45,7 +44,7 @@ func SetMsg(lang Language, code int, msg string) {
 	}
 }
 
-func Msg(lang Language, code int) string {
+func Msg(lang string, code int) string {
 	if codemsg, ok := _codemsg.codeMap[lang]; ok {
 		if msg, ok := codemsg[code]; ok {
 			return msg
