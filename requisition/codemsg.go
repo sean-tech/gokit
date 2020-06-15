@@ -25,6 +25,13 @@ func AddMsgLanguage(lang string)  {
 	_codemsg.codeMap[lang] = make(map[int]string)
 }
 
+func SupportLanguage(lang string) bool {
+	if _, ok := _codemsg.codeMap[lang]; ok == true {
+		return true
+	}
+	return false
+}
+
 func SetMsgMap(lang string, msgMap map[int]string) {
 	if codemsg, ok := _codemsg.codeMap[lang]; ok {
 		for k, v := range msgMap {
