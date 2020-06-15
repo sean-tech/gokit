@@ -1,7 +1,7 @@
 package requisition
 
 const (
-	LangeageZh string = "zh_CN"
+	LanguageZh string = "zh_CN"
 	LanguageEn string = "en_US"
 )
 
@@ -18,7 +18,7 @@ func init() {
 	en := make(map[int]string)
 	_codemsg.codeMap[LanguageEn] = en
 	cn := make(map[int]string)
-	_codemsg.codeMap[LangeageZh] = cn
+	_codemsg.codeMap[LanguageZh] = cn
 }
 
 func AddMsgLanguage(lang string)  {

@@ -49,6 +49,6 @@ func NewError(err error, code int) *Error {
 		error: err,
 		code:  code,
 		msg:   "msg not register",
-		lang: LangeageZh,
+		lang: LanguageZh,
 	}
 }
