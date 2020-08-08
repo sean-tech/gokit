@@ -1,7 +1,7 @@
 package requisition
 
 import (
-	"errors"
+	"fmt"
 )
 
 type IError interface {
@@ -42,13 +42,20 @@ func (this *Error) GetLang() string {
 }
 
 func NewError(err error, code int) *Error {
+	msg := Msg(LanguageZh, code)
+	if msg == "" {
+		msg = Msg(LanguageEn, code)
+	}
+	if msg == "" {
+		msg = "msg not register"
+	}
 	if err == nil {
-		err = errors.New("")
+		err = fmt.Errorf("code:%d,msg:%s", code, msg)
 	}
 	return &Error{
 		error: err,
 		code:  code,
-		msg:   "msg not register",
+		msg:  msg,
 		lang: LanguageZh,
 	}
 }
