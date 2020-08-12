@@ -16,6 +16,7 @@ type Requisition struct {
 	UserId          uint64        `json:"userId"`
 	UserName        string        `json:"userName"`
 	RoleId          uint64        `json:"roleId"`
+	RoleName        string        `json:"roleName"`
 }
 
 type GinContext interface {
