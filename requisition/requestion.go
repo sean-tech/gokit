@@ -12,9 +12,10 @@ const (
  * 服务信息
  */
 type Requisition struct {
-	RequestId       uint64        `json:"requestId"`
-	UserId          uint64        `json:"userId"`
-	UserName        string        `json:"userName"`
+	RequestId   uint64      `json:"requestId"`
+	UserId      uint64      `json:"userId"`
+	UserName    string      `json:"userName"`
+	Role		string		`json:"role"`
 }
 
 type GinContext interface {
@@ -30,6 +31,7 @@ func NewRequestion(ctx GinContext) *Requisition {
 		RequestId:      0,
 		UserId:         0,
 		UserName:       "",
+		Role: 			"",
 	}
 	ctx.Set(key_ctx_requestion, rq)
 	return rq
@@ -43,6 +45,7 @@ func NewRequestionContext(ctx context.Context) context.Context {
 		RequestId:      0,
 		UserId:         0,
 		UserName:       "",
+		Role: 			"",
 	}
 	return context.WithValue(ctx, key_ctx_requestion, rq)
 }
@@ -61,7 +64,7 @@ func GetRequisition(ctx context.Context) *Requisition {
 /**
  * 信息校验，token绑定的用户信息同参数传入信息校验，信息不一致说明恶意用户传他人数据渗透
  */
-func CheckRequisitionInfo(ctx context.Context, userId uint64, userName string) bool {
+func CheckTokenUser(ctx context.Context, userId uint64, userName string) bool {
 	info := GetRequisition(ctx)
 	if info == nil {
 		return false
