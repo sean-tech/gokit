@@ -1,37 +1,36 @@
 package foundation
 
 import (
-	"errors"
 	"fmt"
 )
 
-type IError interface {
+type Error interface {
 	error
 	Code() int
 	Msg() string
 }
 
-type Error struct {
+type cerr struct {
 	error
 	code 	int
 	msg  	string
 }
 
-func (this *Error) Code() int {
+func (this *cerr) Code() int {
 	return this.code
 }
 
-func (this *Error) Msg() string {
+func (this *cerr) Msg() string {
 	return this.msg
 }
 
-func NewError(err error, code int, msg string) *Error {
+func NewError(err error, code int, msg string) Error {
 	if err == nil {
-		err = errors.New(fmt.Sprintf("code:%d,msg:%s", code, msg))
+		err = fmt.Errorf("code:%d,msg:%s", code, msg)
 	}
-	return &Error{
+	return &cerr{
 		error: err,
 		code:  code,
-		msg:   msg,
+		msg:  msg,
 	}
 }
